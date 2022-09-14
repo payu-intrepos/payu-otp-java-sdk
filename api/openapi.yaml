@@ -1,0 +1,216 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:8013
+tags:
+- description: Validate token
+  name: ValidateToken
+- description: Resend OTP
+  name: ResendOTP
+- description: Validate OTP
+  name: ValidateOTP
+- description: Send OTP
+  name: SendOTP
+paths:
+  /token/validate:
+    post:
+      description: Validate token
+      operationId: validateToken
+      parameters:
+      - explode: false
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Token validated successfully
+      summary: Validate Token
+      tags:
+      - ValidateToken
+      x-contentType: application/json
+      x-accepts: application/json
+  /otp/verify:
+    post:
+      description: Validate OTP
+      operationId: verifyOTP
+      parameters:
+      - explode: false
+        in: header
+        name: clientType
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOTPRequest'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: OTP validated successfully
+      summary: Validate OTP
+      tags:
+      - ValidateOTP
+      x-contentType: application/json
+      x-accepts: application/json
+  /otp/send:
+    post:
+      description: Send OTP
+      operationId: sendOTP
+      parameters:
+      - explode: false
+        in: header
+        name: clientType
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtpRequest'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Send OTP successfully
+      summary: Send OTP
+      tags:
+      - SendOTP
+      x-contentType: application/json
+      x-accepts: application/json
+  /otp/resend:
+    post:
+      description: Resend OTP
+      operationId: resendOTP
+      parameters:
+      - explode: false
+        in: header
+        name: clientType
+        required: false
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: header
+        name: uuid
+        required: false
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtpRequest'
+        required: true
+      responses:
+        "400":
+          description: Bad Request
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Resend OTP successfully
+      summary: Resend OTP
+      tags:
+      - ResendOTP
+      x-contentType: application/json
+      x-accepts: application/json
+components:
+  schemas:
+    TokenRequest:
+      example:
+        mobileNumber: "9999999999"
+        token: eyJhbGci..
+      properties:
+        token:
+          description: Token Value
+          example: eyJhbGci..
+          type: string
+        mobileNumber:
+          description: Mobile Number should be same as used in token generation
+          example: "9999999999"
+          pattern: ^[6-9][0-9]{9}$
+          type: string
+      required:
+      - mobileNumber
+      type: object
+    VerifyOTPRequest:
+      example:
+        mobileNumber: "9999999999"
+        otp: 237613
+        uuid: "21312122312323"
+      properties:
+        mobileNumber:
+          description: Mobile Number should be same as send OTP Request
+          example: "9999999999"
+          pattern: ^[6-9][0-9]{9}$
+          type: string
+        otp:
+          description: OTP received from send OTP Request
+          example: 237613
+          format: int32
+          type: integer
+        uuid:
+          description: UUID received from send OTP Request
+          example: "21312122312323"
+          type: string
+      type: object
+    SendOtpRequest:
+      example:
+        amount: 1000
+        mobileNumber: "9999999999"
+        merchantName: amazon
+      properties:
+        mobileNumber:
+          description: Mobile Number in which OTP should be send
+          example: "9999999999"
+          pattern: ^[6-9][0-9]{9}$
+          type: string
+        merchantName:
+          description: Merchant Name is used in OTP Message
+          example: amazon
+          type: string
+        amount:
+          description: Amount is used in OTP Message
+          example: 1000
+          format: double
+          type: number
+      required:
+      - mobileNumber
+      type: object
+
